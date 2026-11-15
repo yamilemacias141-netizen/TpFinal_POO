@@ -7,14 +7,14 @@ import estructuraTPmodelo.Barrios.Barrio;
 public class Comuna {
 	private String nombre;
 	private int numeroComuna;
+	private int cantidadBarrios;
 	private ArrayList<Barrio> barrios = new ArrayList<>();
-	private int cantidadBarrios =barrios.size() ;
-	
-	public Comuna(String nombre,int nummeroComuna)
+
+	public Comuna(String nombre,int nummeroComuna,int cantidadBarrios)
 	{
 		this.nombre=nombre;
 		this.numeroComuna=numeroComuna;
-		
+		this.cantidadBarrios =cantidadBarrios;
 	}
 	
 	

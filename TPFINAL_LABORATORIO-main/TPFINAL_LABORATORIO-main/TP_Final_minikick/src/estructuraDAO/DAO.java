@@ -37,85 +37,9 @@ public class DAO {
 		}
 		return conexion;
 	}
-	public String obtenerIdSituacionLaboral(String situacionLaboral)
-	{
-		String sql = "SELECT idSituacionLaboral FROM tipoSituacionLaboral WHERE nombreSituacionLaboral = '" + situacionLaboral+"';";
-		Connection conexion = null;
-		int id=0;
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
-			while(rs.next())
-			{
-				id = rs.getInt("idSituacionLaboral");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-		
-		return String.valueOf(id);
-	}
-	
-	public String obtenerIdBarrio(String nombreBarrio)
-	{
-		String sql = "SELECT idBarrio FROM barrio WHERE nombreBarrio = '" + nombreBarrio +"';";
-		Connection conexion = null;
-		int id=0;
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
-			while(rs.next())
-			{
-				id = rs.getInt("idBarrio");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-		
-		return String.valueOf(id);
-	}
 	
 	
 	
-	public void agregarPersona(Persona p, String situacionLaboral, String nombreBarrio) {
-		Connection conexion = null;
-		
-		String sql = "INSERT INTO persona (nombrePersona,fechaNacimientoPersona,dniPersona, barrio_idBarrio,tiposituacionlaboral_idtipoSituacionLaboral)VALUES(?,?,"+ obtenerIdBarrio(nombreBarrio) +","+ obtenerIdSituacionLaboral(situacionLaboral) +")"+";";
-		try {
-			conexion = conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
-			stmt.setString(1, p.getNombre());
-			stmt.setDate(2, p.getFechaNacimiento());
-			stmt.setString(3, p.getDNI());
-			stmt.executeUpdate();
-			System.out.println("se agrego");
-		}catch(SQLException e){
-			e.printStackTrace();
-		}finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	}
 	
 	public void agregarBarrioTrazadoFormal (TrazadoFormal t ) {
 		Connection conexion = null;
@@ -186,6 +110,8 @@ public class DAO {
 		}
 	}
 
+	
+	//AGREGAR COMUNAAAAAAA
 	public void agregarComuna(Comuna c ) {
 		Connection conexion = null;
 		
@@ -209,17 +135,27 @@ public class DAO {
 		
 	}
 	
-	
-	public void  actualizarPersona(String dni, String situacionLaboralNuevo)
+	//CONSULTAR COMUNAAAAAA
+	public ArrayList<Comuna> consultarComuna()
 	{
-		String sql = "UPDATE persona SET tiposituacionlaboral_idtipoSituacionLaboral = "+ obtenerIdSituacionLaboral(situacionLaboralNuevo) +" WHERE dni = ?;";
+		String sql = "SELECT c.numeroComuna, c.nombreComuna , (SELECT COUNT(*) FROM barrio b WHERE b.comuna_idComuna = c.idComunna) AS cantidadBarrios FROM comuna c; ";
+		//SANTY EN ESTE CASO TENGO QUE USAR ID YA QUE EN LA TABLA BARRIO ESTA EL ID DE COMUNA COMO FK, PODRIA UTILIZAR NUMEROCOMUNA PERO NO ESTA ESE CAMPO EN LA TABLA BARRIO
 		Connection conexion = null;
+		ArrayList<Comuna> solucion = new ArrayList<>();
 		try {
 			conexion = conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
-			stmt.setString(1, dni);
-			stmt.executeUpdate();
-			System.out.println("se actualizo");
+			Statement stnt = conexion.createStatement();
+		    ResultSet rs = stnt.executeQuery(sql);	
+			while(rs.next())
+			{
+				int numero = rs.getInt("numeroComuna");
+				String nombre = rs.getString("nombreComuna");
+				int cantidad = rs.getInt("cantidadBarrios");
+				Comuna c = new Comuna(nombre,numero,cantidad);
+				solucion.add(c);
+
+
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -230,15 +166,17 @@ public class DAO {
 			}
 
 		}
+		return solucion;
 	}
-	public void eliminarPersona(String dni)
+	//ELIMINAR COMUNAAAAA
+	public void eliminarComuna(String numeroComuna)
 	{
-		String sql = "DELETE FROM `tabla`WHERE dni = ?;";
+		String sql = "DELETE FROM comuna WHERE numeroComuna = ?";
 		Connection conexion = null;
 		try {
 			conexion = conectar();
 			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setString(1,dni);
+			stnt.setString(1, numeroComuna);
 			stnt.executeUpdate();
 			System.out.println("se elimino");
 		} catch (SQLException e) {
@@ -252,223 +190,14 @@ public class DAO {
 
 		}
 	}
-	
-	
-	public ArrayList<Persona> consultarPersona()
-	{
-		String sql = "SELECT nombrePersona, fechaNacimientoPersona, dniPersona,tiposituacionlaboral_idtipoSituacionLaboral,   FROM persona ";
-		Connection conexion = null;
-		ArrayList<Persona> solucion = new ArrayList<>();
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
-			while(rs.next())
-			{
-				String nombre = rs.getString("nombrePersona");
-				Date fechaNacimiento = rs.getDate("fechaNacimientoPersona");
-			    String dni = rs.getString("dniPersona");
-			    String tipoSituacionLaboral = rs.getString("tipoSituacionLaboral");
-			    Persona p = new Persona(nombre,fechaNacimiento, dni,obtenerIdSituacionLaboral("tiposituacionlaboral_idtipoSituacionLaboral") ,obtenerIdBarrio("barrio_idBarrio") );
-			    solucion.add(p);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return solucion;
-	}
-
-	
-	
-	
-	public ArrayList<Barrio> consultarBarrios()
-	{
-		String sql = "SELECT nombrePersona, fechaNacimientoPersona, dniPersona, tipoSituacionLaboral FROM persona ";
-		Connection conexion = null;
-		ArrayList<Barrio> solucion = new ArrayList<>();
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
-			while(rs.next())
-			{
-				//int id = rs.getInt("id");
-				//String nombre = rs.getString("nombre");
-				//String dni = rs.getString("dni");
-				//Persona p1 = new Persona ();
-				//solucion.add(p1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return solucion;
-	}
+	// ACTUALIZARC COMUNA  NO LO PONDREMOS YA QUE EN LA TABLA COMUNA NO TIENE SENTID MODIFICAR EL NUMERO O EL NOMBRE
 	
 	
 	
 	
-	public void  actualizarBarrios( String nombree, String dniNuevo)
-	{
-		String sql = "UPDATE tabla SET nombre = ? , dni = ? WHERE dni = ?;";
-		Connection conexion = null;
-		try {
-			conexion = conectar();
-			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setString(1, nombree);
-			stnt.setString(2, dniNuevo);
-	
-			System.out.println("se actualizo");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
 	
 	
-	public ArrayList<Comuna> consultar()
-	{
-		String sql = "SELECT nombreConsultar, numeroComuna FROM comuna; ";
-		Connection conexion = null;
-		ArrayList<Comuna> solucion = new ArrayList<>();
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
-			while(rs.next())
-			{
-				String nombre = rs.getString("nombreConsultar");
-				int numero = rs.getInt("numeroComuna");
-				Comuna c = new Comuna(nombre, numero);
-			    solucion.add(c);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return solucion;
-	}
-	
-
-
-	public void agregar() {
-		String sql = "INSERT INTO `tabla`(`nombre`,`dni`)VALUES('Lautaro',12345678) , ('Yamile',48856758) ;";
-		Connection conexion = null;
-		try {
-			conexion = conectar();
-			Statement stnt = conexion.createStatement();
-			stnt.executeUpdate(sql);
-			System.out.println("se agrego");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-	
-
-	
-	public void eliminar(String dni)
-	{
-		String sql = "DELETE FROM `tabla`WHERE dni = ?;";
-		Connection conexion = null;
-		try {
-			conexion = conectar();
-			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setString(1,dni);
-			stnt.executeUpdate(sql);
-			System.out.println("se elimino");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
-	
-	public void  actualizar( String nombree, String dniNuevo)
-	{
-		String sql = "UPDATE tabla SET nombre = ? , dni = ? WHERE dni = ?;";
-		Connection conexion = null;
-		try {
-			conexion = conectar();
-			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setString(1, nombree);
-			stnt.setString(2, dniNuevo);
-	
-			System.out.println("se actualizo");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
 	
 	
-	public void agregarPersonaPorParametro() {
-		Connection conexion = null;
-		
-		String sql = "INSERT INTO persona (nombrePersona,fechaNacimientoPersona,tiposituacionlaborall )VALUES(?,?,?,?);";
-		try {
-			conexion = conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
-			stmt.setString(1, "");
-			//stmt.set
-			stmt.setString(3, "");
-		
-		 
-			System.out.println("se agrego");
-		}catch(SQLException e){
-			e.printStackTrace();
-		}finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	}
+	
 }
-
-

@@ -171,7 +171,7 @@ public class DAO {
 	//ELIMINAR COMUNAAAAA
 	public void eliminarComuna(String numeroComuna)
 	{
-		String sql = "DELETE FROM comuna WHERE numeroComuna = ?";
+		String sql = "DELETE FROM comuna WHERE numeroComuna = ?;";
 		Connection conexion = null;
 		try {
 			conexion = conectar();
@@ -190,8 +190,32 @@ public class DAO {
 
 		}
 	}
-	// ACTUALIZARC COMUNA  NO LO PONDREMOS YA QUE EN LA TABLA COMUNA NO TIENE SENTID MODIFICAR EL NUMERO O EL NOMBRE
+	//ACTUALIZAR COMUNAAAA
+	public void  actualizarComuna(String numeroComuna, String nombreNuevo, String numeroNuevo )
+	{
 	
+		String sql = "UPDATE comuna SET nombreComuna = ? , numeroComuna = ? WHERE numeroComuna = ?;";
+		Connection conexion = null;
+		try {
+			conexion = conectar();
+			PreparedStatement stnt = conexion.prepareStatement(sql);
+			stnt.setString(1, nombreNuevo);
+			stnt.setString(2, numeroNuevo);
+			stnt.setString(3, numeroComuna);
+			
+			stnt.executeUpdate();
+			System.out.println("se actualizo");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
 	
 	
 	

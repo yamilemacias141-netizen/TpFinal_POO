@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
+import estructuraTP.Utilidades.Navegador;
 import estructuraTPvista.Barrio.BarrioAltaPN;
 import estructuraTPvista.Barrio.BarrioConsultar;
 import estructuraTPvista.Barrio.MenuBarrioPN;
@@ -165,13 +166,13 @@ public class Principal extends JFrame {
 	{
 		botonAltaBarrio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(panel, "AltaBarrio");
+				Navegador.cambiarPantalla(bAlta, "AltaBarrio");
 			}
 		});
 
 		botonConsultaBarrio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(panel, "ConsultaBarrio");
+				Navegador.cambiarPantalla(bConsultar, "ConsultaBarrio");
 			}
 		});
 	}

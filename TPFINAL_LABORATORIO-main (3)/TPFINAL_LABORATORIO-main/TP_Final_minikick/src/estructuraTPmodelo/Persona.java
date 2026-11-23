@@ -8,12 +8,13 @@ public class Persona {
 	private Date fechaNacimiento;
 	private TipoSituacionLaboral tipo;
 	private String DNI;
-	
-	public Persona(String nombre, Date fechaNacimiento, TipoSituacionLaboral tipo, String DNI) {
+	private String nombreBarrio;
+	public Persona(String nombre, Date fechaNacimiento,  String DNI,TipoSituacionLaboral tipo, String nombreBarrio) {
 		this.nombre = nombre;
 		this.fechaNacimiento = fechaNacimiento;
 		this.tipo = tipo;
 		this.DNI = DNI;
+		this.nombreBarrio = nombreBarrio;
 	}
 
 	public String getNombre() {
@@ -26,6 +27,10 @@ public class Persona {
 
 	public String getDNI() {
 		return DNI;
+	}
+
+	public String getNombreBarrio() {
+		return nombreBarrio;
 	}
 	
 	

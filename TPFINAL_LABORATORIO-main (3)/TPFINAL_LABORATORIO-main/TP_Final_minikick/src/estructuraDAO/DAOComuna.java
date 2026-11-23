@@ -48,17 +48,6 @@ public class DAOComuna {
 		//SANTY EN ESTE CASO TENGO QUE USAR ID YA QUE EN LA TABLA BARRIO ESTA EL ID DE COMUNA COMO FK, PODRIA UTILIZAR NUMEROCOMUNA PERO NO ESTA ESE CAMPO EN LA TABLA BARRIO
 		Connection conexion = null;
 		ArrayList<Comuna> solucion = new ArrayList<>();
-		
-//		try(Statement stnt = conexion.createStatement()){
-//			
-//			
-//			
-//			
-//		} catch (SQLException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
 		try {
 			conexion = conect.conectar();
 			Statement stnt = conexion.createStatement();

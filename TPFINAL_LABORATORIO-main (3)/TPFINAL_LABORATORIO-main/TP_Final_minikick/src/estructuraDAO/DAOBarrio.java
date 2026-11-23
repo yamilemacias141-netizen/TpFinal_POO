@@ -23,69 +23,22 @@ public class DAOBarrio{
 	public boolean agregar(Barrio b, int numeroComuna)
 	{
 		Connection conexion = null;
-		String sql = "INSERT INTO barrio (nombreBarrio,superficieEnHectarias,cantidadEdificiosBarrio,porcentajeAsfaltoBarrio,numeroLeyCabaBarrio, conexionRedAguaBarrio,cantidadMonoblocksBarrio,consorcioAdministracionBarrio, idComuna, idTipoBarrio)VALUES(?,?,?,?,?,?,?,?,?,?);";
+		String sql = "INSERT INTO barrio (nombreBarrio,superficieEnHectarias,cantidadEdificiosBarrio,porcentajeAsfaltoBarrio,numeroLeyCabaBarrio, conexionRedAguaBarrio,cantidadMonoblocksBarrio,consorcioAdministracionBarrio, idComuna, idTipoBarrio)VALUES(?,?,?,?,?,?,?,?,(SELECT idComuna FROM comuna WHERE numeroComuna = ?),?);";
 		boolean aux = true;
 		try {
 			conexion = conect.conectar();
 			PreparedStatement stmt = conexion.prepareStatement(sql);
-	
-			if (b instanceof TrazadoFormal)
-			{
-				TrazadoFormal tf = (TrazadoFormal)b;
-				stmt.setString(1, tf.getNombre());
-				stmt.setFloat(2, tf.getSuperficie());
-				stmt.setInt(3, tf.getCantidadEdificios());
-                stmt.setFloat(4, tf.getPorcentajeAsfalto());
-                stmt.setNull(5, Types.VARCHAR);
-                stmt.setNull(6, Types.BOOLEAN);
-                stmt.setNull(7, Types.INTEGER);
-                stmt.setNull(8, Types.BOOLEAN);
-                stmt.setInt(9, numeroComuna);
-				stmt.setInt(10, 1);
-			}
-			else if(b instanceof UrbanizacionPlanificada)
-			{
-				UrbanizacionPlanificada up = (UrbanizacionPlanificada) b;
-				
-				stmt.setString(1, up.getNombre());
-				stmt.setFloat(2, up.getSuperficie());
-				stmt.setNull(3, Types.INTEGER);
-				stmt.setNull(4, Types.DECIMAL);
-				stmt.setString(5, up.getNumeroLey());
-				stmt.setBoolean(6, up.getTieneConexionAgua());
-				stmt.setNull(7, Types.INTEGER);
-				stmt.setNull(8, Types.BOOLEAN);
-				stmt.setInt(9, numeroComuna);
-				stmt.setInt(10, 2);
-			}
-			else if(b instanceof ComplejoHabitacional)
-			{
-				ComplejoHabitacional ch = (ComplejoHabitacional) b;
-				stmt.setString(1, ch.getNombre());
-				stmt.setFloat(2, ch.getSuperficie());
-				stmt.setNull(3, Types.INTEGER);
-				stmt.setNull(4, Types.DECIMAL);
-				stmt.setNull(5, Types.VARCHAR);
-				stmt.setNull(6, Types.BOOLEAN);
-				stmt.setInt(7, ch.getCantidadMonoblock());
-				stmt.setBoolean(8, ch.getTieneConsorcioAdministracion());
-				stmt.setInt(9, numeroComuna);
-				stmt.setInt(10, 3);
-				
-			}
+			cargarBarrio(stmt,b);
+			
 			stmt.executeUpdate();
 		
-			System.out.println("se agrego");
+			
+			stmt.close();
 			conexion.close();
 		}catch(SQLException e){
 			aux = false;
 			e.printStackTrace();
-		}finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		
 		}
 		return aux;
 	}
@@ -98,51 +51,13 @@ public class DAOBarrio{
 	        conexion = conect.conectar();
 	        PreparedStatement stmt = conexion.prepareStatement(sql);
 
-	        if (b instanceof TrazadoFormal) {
-	            TrazadoFormal tf = (TrazadoFormal) b;
-	            stmt.setString(1, tf.getNombre());
-	            stmt.setFloat(2, tf.getSuperficie());
-	            stmt.setInt(3, tf.getCantidadEdificios());
-	            stmt.setFloat(4, tf.getPorcentajeAsfalto());
-	            stmt.setNull(5, Types.VARCHAR);
-	            stmt.setNull(6, Types.BOOLEAN);
-	            stmt.setNull(7, Types.INTEGER);
-	            stmt.setNull(8, Types.BOOLEAN);
-	           
-
-	        } else if (b instanceof UrbanizacionPlanificada) {
-	            UrbanizacionPlanificada up = (UrbanizacionPlanificada) b;
-	            stmt.setString(1, up.getNombre());
-	            stmt.setFloat(2, up.getSuperficie());
-	            stmt.setNull(3, Types.INTEGER);
-	            stmt.setNull(4, Types.FLOAT);
-	            stmt.setString(5, up.getNumeroLey());
-	            stmt.setBoolean(6, up.getTieneConexionAgua());
-	            stmt.setNull(7, Types.INTEGER);
-	            stmt.setNull(8, Types.BOOLEAN);
-	            
-
-	        } else if (b instanceof ComplejoHabitacional) {
-	            ComplejoHabitacional ch = (ComplejoHabitacional) b;
-	            stmt.setString(1, ch.getNombre());
-	            stmt.setFloat(2, ch.getSuperficie());
-	            stmt.setNull(3, Types.FLOAT);
-	            stmt.setNull(4, Types.VARCHAR);
-	            stmt.setNull(5, Types.BOOLEAN);
-	            stmt.setInt(6, ch.getCantidadMonoblock());
-	            stmt.setBoolean(7, ch.getTieneConsorcioAdministracion());
-	            stmt.setNull(8, Types.BOOLEAN);
-	        }
+	        cargarBarrio(stmt,b);
 	        stmt.executeUpdate();
-
+            stmt.close();
+            conexion.close();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (conexion != null) conexion.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    
 	    }
 	}
 	
@@ -202,9 +117,9 @@ public class DAOBarrio{
 		Connection conexion = null;
 		try {
 			conexion = conect.conectar();
-			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setString(1, nombreBarrio);
-			stnt.executeUpdate();
+			PreparedStatement stmt = conexion.prepareStatement(sql);
+			stmt.setString(1, nombreBarrio);
+			stmt.executeUpdate();
 			System.out.println("se elimino");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -247,5 +162,32 @@ public class DAOBarrio{
 	    return tipos;
 	}
 	
+	private void cargarBarrio(PreparedStatement stmt, Barrio b) throws SQLException{
+		stmt.setString(1, b.getNombre());
+	    stmt.setFloat(2, b.getSuperficieEnHectarias());
 
+	    if (b instanceof TrazadoFormal tf) {
+	        stmt.setInt(3, tf.getCantidadEdificios());
+	        stmt.setFloat(4, tf.getPorcentajeAsfalto());
+	        stmt.setNull(5, Types.VARCHAR);
+	        stmt.setNull(6, Types.BOOLEAN);
+	        stmt.setNull(7, Types.INTEGER);
+	        stmt.setNull(8, Types.BOOLEAN);
+	    } else if (b instanceof UrbanizacionPlanificada up) {
+	        stmt.setNull(3, Types.INTEGER);
+	        stmt.setNull(4, Types.FLOAT);
+	        stmt.setString(5, up.getNumeroLey());
+	        stmt.setBoolean(6, up.getTieneConexionAgua());
+	        stmt.setNull(7, Types.INTEGER);
+	        stmt.setNull(8, Types.BOOLEAN);
+	    } else if (b instanceof ComplejoHabitacional ch) {
+	        stmt.setNull(3, Types.INTEGER);
+	        stmt.setNull(4, Types.FLOAT);
+	        stmt.setNull(5, Types.VARCHAR);
+	        stmt.setNull(6, Types.BOOLEAN);
+	        stmt.setInt(7, ch.getCantidadMonoblock());
+	        stmt.setBoolean(8, ch.getTieneConsorcioAdministracion());
+	    }
+	  
+	}
 }

@@ -50,8 +50,8 @@ public class DAOComuna {
 		ArrayList<Comuna> solucion = new ArrayList<>();
 		try {
 			conexion = conect.conectar();
-			Statement stnt = conexion.createStatement();
-		    ResultSet rs = stnt.executeQuery(sql);	
+			Statement stmt = conexion.createStatement();
+		    ResultSet rs = stmt.executeQuery(sql);	
 			while(rs.next())
 			{
 				int numero = rs.getInt("numeroComuna");
@@ -62,7 +62,8 @@ public class DAOComuna {
 			}
 			
 		    rs.close();
-		    
+		    stmt.close();
+		    conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

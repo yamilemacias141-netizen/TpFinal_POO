@@ -39,6 +39,12 @@ public abstract class DAOPersona{
 			sePudoCargar = false;
 			e.printStackTrace();
 		
+		}finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return sePudoCargar;
 	}
@@ -69,7 +75,13 @@ public abstract class DAOPersona{
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} 
+		} finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return solucion;
 	}
 	
@@ -102,7 +114,13 @@ public abstract class DAOPersona{
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} 
+		} finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return solucion;
 	}
 	
@@ -128,7 +146,13 @@ public abstract class DAOPersona{
 		} catch (SQLException e) {
 			sePudoCargar = false;
 			e.printStackTrace();
-		} 
+		} finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
 		
 		return sePudoCargar;
@@ -148,6 +172,12 @@ public abstract class DAOPersona{
 		} catch (SQLException e) {
 			e.printStackTrace();
 
+		}finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -191,14 +191,8 @@ public class BarrioConsultar extends JPanel {
 		                }
 		            }
 
-		            // 3. Mandarlo al dialogo segun el tipo que sea
-		            if (b instanceof TrazadoFormal) {
-		                Dialogo.mostrarDialogoCargarBarrio(b, BarrioConsultar.this);
-		            } else if (b instanceof UrbanizacionPlanificada) {
-		                Dialogo.mostrarDialogoCargarBarrio(b, BarrioConsultar.this);
-		            } else if (b instanceof ComplejoHabitacional) {
-		                Dialogo.mostrarDialogoCargarBarrio(b, BarrioConsultar.this);
-		            }
+		            Dialogo.mostrarDialogoCargarBarrio(b, BarrioConsultar.this);
+		            
 
 		            mostrarDespuesDeAlgo();
 		        }
@@ -221,7 +215,7 @@ public class BarrioConsultar extends JPanel {
 		else {
 			modelo.setRowCount(0);
 			ArrayList<Barrio> barrios = Sentencias.barrio.consultarBarrios();
-			Barrio ba;
+			
 			for(Barrio b: barrios) {
 				if(b instanceof TrazadoFormal)
 				{
@@ -240,4 +234,6 @@ public class BarrioConsultar extends JPanel {
 			}
 		}
 	}
+	
+	private void 
 }

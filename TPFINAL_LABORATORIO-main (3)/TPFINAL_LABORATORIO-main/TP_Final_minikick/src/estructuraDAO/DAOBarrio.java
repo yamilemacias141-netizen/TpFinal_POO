@@ -22,19 +22,13 @@ public class DAOBarrio{
 	
 	public boolean agregar(Barrio b, int numeroComuna)
 	{
-		Connection conexion = null;
 		String sql = "INSERT INTO barrio (nombreBarrio,superficieEnHectarias,cantidadEdificiosBarrio,porcentajeAsfaltoBarrio,numeroLeyCabaBarrio, conexionRedAguaBarrio,cantidadMonoblocksBarrio,consorcioAdministracionBarrio, idComuna, idTipoBarrio)VALUES(?,?,?,?,?,?,?,?,(SELECT idComuna FROM comuna WHERE numeroComuna = ?),?);";
 		boolean aux = true;
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			cargarBarrio(stmt,b);
 			
 			stmt.executeUpdate();
-		
-			
-			stmt.close();
-			conexion.close();
 		}catch(SQLException e){
 			aux = false;
 			e.printStackTrace();
@@ -46,15 +40,11 @@ public class DAOBarrio{
 	public void actualizar(Barrio b, String nombreBarrio)
 	{
 	    String sql = "UPDATE barrio SET nombreBarrio varchar = ? , superficieBarrio=? , cantidadEdificiosBarrio=? , porcentajeAsfaltoBarrio= ?,numeroLeyCabaBarrio = ?, conexionRedAguaBarrio = ?,cantidadMonoblocksBarrio=?,consorcioAdministracionBarrio=? WHERE nombreBarrio = ?";
-	    Connection conexion = null;
-	    try {
-	        conexion = conect.conectar();
-	        PreparedStatement stmt = conexion.prepareStatement(sql);
+	    try (Connection conexion = conect.conectar();
+	    	 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
 	        cargarBarrio(stmt,b);
 	        stmt.executeUpdate();
-            stmt.close();
-            conexion.close();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    
@@ -64,12 +54,10 @@ public class DAOBarrio{
 	public ArrayList<Barrio> consultarBarrios()
 	{
 	    String sql = "SELECT b.* , tb.nombreTipoBarrio FROM barrio b INNER JOIN tipobarrio tb ON b.tipobarrio_idtipobarrio = tb.idtipobarrio;";
-	    Connection conexion = null;
 	    ArrayList<Barrio> solucion = new ArrayList<>();
-	    try {
-	        conexion = conect.conectar();
-	        Statement stnt = conexion.createStatement();
-	        ResultSet rs = stnt.executeQuery(sql);	
+	    try (Connection conexion = conect.conectar();
+	    	 Statement stnt = conexion.createStatement();
+	    	 ResultSet rs = stnt.executeQuery(sql)) {
 	        while(rs.next())
 	        {
 	            String nombre = rs.getString("nombreBarrio");
@@ -102,48 +90,31 @@ public class DAOBarrio{
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(conexion != null) conexion.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
 	    }
 	    return solucion;
 	}
 	public void eliminarBarrio(String nombreBarrio)
 	{
 		String sql = "DELETE FROM barrio WHERE nombreBarrio = ?";
-		Connection conexion = null;
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			stmt.setString(1, nombreBarrio);
 			stmt.executeUpdate();
 			System.out.println("se elimino");
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
 		}
 	}
 	
 	
 	public String[] consultarTipoBarrios() {
 		String sql = "SELECT nombreTipoBarrio from tipobarrio;";
-	    Connection conexion = null;
 	    String[] tipos = new String[3];
 	    int i = 0;
 	    
-	    try {
-	        conexion = conect.conectar();
-	        Statement stnt = conexion.createStatement();
-	        ResultSet rs = stnt.executeQuery(sql);	
+	    try (Connection conexion = conect.conectar();
+	    	 Statement stnt = conexion.createStatement();
+	    	 ResultSet rs = stnt.executeQuery(sql)) {
 	        while(rs.next())
 	        {
 	        	String tipo = rs.getString("nombreTipoBarrio");
@@ -152,12 +123,6 @@ public class DAOBarrio{
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(conexion != null) conexion.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
 	    }
 	    return tipos;
 	}

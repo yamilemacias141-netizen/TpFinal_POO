@@ -20,12 +20,10 @@ public abstract class DAOPersona{
 	}
 	public boolean agregarPersona(Persona p,String nombreSituacionLaboral, String barrio) {
 		boolean sePudoCargar = true;
-		Connection conexion = null;
 		//SANTY MODIFICA LOS NOMBRES DE COMO TENES LA FK DE BARRIO Y TIPOSITUACIONLABORAL EN PERSONA
 		String sql = "INSERT INTO persona (nombrePersona , fechaNacimientoPersona,dniPersona , barrio_idBarrio, tipoSituacionLaboral_idtipoSituacionLaboral)VALUES(?,?,?,(SELECT idBario FROM barrio WHERE nombreBarrio =?  ),(SELECT idtipoSituacionLaboral FROM tipoSituacionLaboral WHERE nombreTipoSituacionLaboral  =?));";
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			stmt.setString(1, p.getNombre());
 			stmt.setDate(2, p.getFechaNacimiento());
 			stmt.setString(3, p.getDNI());
@@ -33,18 +31,9 @@ public abstract class DAOPersona{
 			stmt.setString(5, nombreSituacionLaboral);
 			
 			stmt.executeUpdate();
-			
-			stmt.close();
 		}catch(SQLException e){
 			sePudoCargar = false;
 			e.printStackTrace();
-		
-		}finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return sePudoCargar;
 	}
@@ -53,12 +42,10 @@ public abstract class DAOPersona{
 	{
 		String sql = "SELECT p.nombrePersona , p.fechaNacimientoPersona , p.dniPersona, b.nombreBarrio , t.nombreTipoSituacionLaboral FROM persona p INNER JOIN barrio b ON p.barrio_idBarrio = b.idBarrio INNER JOIN tipoSituacionLaboral t ON p.tipoSituacionLaboral_idtipoSituacionLaboral = t.idtipoSituacionLaboral";
 		
-		Connection conexion = null;
 		ArrayList<Persona> solucion = new ArrayList<>();
-		try {
-			conexion = conect.conectar();
-			Statement stmt = conexion.createStatement();
-		    ResultSet rs = stmt.executeQuery(sql);	
+		try (Connection conexion = conect.conectar();
+			 Statement stmt = conexion.createStatement();
+		     ResultSet rs = stmt.executeQuery(sql)) {
 			while(rs.next())
 			{
 				String nombre = rs.getString("nombrePersona");
@@ -69,18 +56,9 @@ public abstract class DAOPersona{
 				Persona p = new Persona(nombre,fechaNacimiento,dni,tipo,nombreBarrio);
 				solucion.add(p);
 			}
-			rs.close();
-			stmt.close();
-		    conexion.close();
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return solucion;
 	}
@@ -90,11 +68,9 @@ public abstract class DAOPersona{
 	{
 		String sql = "SELECT p.nombrePersona , p.fechaNacimientoPersona , p.dniPersona, b.nombreBarrio , t.nombreTipoSituacionLaboral FROM persona p INNER JOIN barrio b ON p.barrio_idBarrio = b.idBarrio INNER JOIN tipoSituacionLaboral t ON p.tipoSituacionLaboral_idtipoSituacionLaboral = t.idtipoSituacionLaboral WHERE dni = ?";
 		
-		Connection conexion = null;
 		ArrayList<Persona> solucion = new ArrayList<>();
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			stmt.setString(1, dniBusqueda);
 		    ResultSet rs = stmt.executeQuery(sql);	
 			while(rs.next())
@@ -109,17 +85,9 @@ public abstract class DAOPersona{
 				solucion.add(p);
 			}
 			rs.close();
-			stmt.close();
-		    conexion.close();
 		    
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return solucion;
 	}
@@ -129,10 +97,8 @@ public abstract class DAOPersona{
 	{
 		boolean sePudoCargar = true;
 		String sql = "UPDATE persona SET nombrePersona = ?, fechaNacimientoPersona = ? , dniPersona = ? , barrio_idBarrio = (SELECT idBarrio FROM barrio WHERE nombreBarrio = ?), tipoSituacionLaboral_idtipoSituacionLabora = (SELECT idtipoSituacionLaboral FROM tipoSituacionLaboral nombreTipoSituacionLaboral = ?) WHERE dniPersona =  ?";
-		Connection conexion = null;
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			stmt.setString(1,p.getNombre());
 			stmt.setDate(2, p.getFechaNacimiento());
 			stmt.setString(3,p.getDNI());
@@ -141,17 +107,9 @@ public abstract class DAOPersona{
 			stmt.setString(6, dni);
 			
 			stmt.executeUpdate();
-			stmt.close();
-			conexion.close();
 		} catch (SQLException e) {
 			sePudoCargar = false;
 			e.printStackTrace();
-		} finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 
 		
@@ -161,23 +119,12 @@ public abstract class DAOPersona{
 	public void eliminarPersona(String dni)
 	{
 		String sql = "DELETE FROM persona WHERE dni = ?";
-		Connection conexion = null;
-		try {
-			conexion = conect.conectar();
-			PreparedStatement stmt = conexion.prepareStatement(sql);
+		try (Connection conexion = conect.conectar();
+			 PreparedStatement stmt = conexion.prepareStatement(sql)) {
 			stmt.setString(1, dni);
 			stmt.executeUpdate();
-			stmt.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
-		}finally {
-			try {
-				conexion.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

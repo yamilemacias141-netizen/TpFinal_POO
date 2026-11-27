@@ -5,22 +5,26 @@ import java.time.LocalDate;
 
 public class Persona {
 	private String nombre;
-	private Date fechaNacimiento;
+	private LocalDate fechaNacimiento;
 	private TipoSituacionLaboral tipo;
 	private String DNI;
 	
-	public Persona(String nombre, Date fechaNacimiento, TipoSituacionLaboral tipo, String DNI) {
+	public Persona(String nombre, LocalDate fechaNacimiento, String DNI, TipoSituacionLaboral tipo) {
 		this.nombre = nombre;
 		this.fechaNacimiento = fechaNacimiento;
 		this.tipo = tipo;
 		this.DNI = DNI;
 	}
 
+	public TipoSituacionLaboral getTipo() {
+		return tipo;
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
 	
-	public Date getFechaNacimiento() {
+	public LocalDate getFechaNacimiento() {
 		return fechaNacimiento;
 	}
 

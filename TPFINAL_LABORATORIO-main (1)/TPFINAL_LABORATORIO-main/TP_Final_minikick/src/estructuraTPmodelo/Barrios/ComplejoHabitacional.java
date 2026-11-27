@@ -4,17 +4,15 @@ public class ComplejoHabitacional extends Barrio{
 	private int cantidadMonoblock;
 	private boolean tieneConsorcioAdministracion;
 	
-
-	
-	public ComplejoHabitacional(String nombre, float superficie, int cantidadMonoblock,
-			boolean tieneConsorcioAdministracion) {
-		super(nombre,superficie);
-		this.cantidadMonoblock=cantidadMonoblock;
-		this.tieneConsorcioAdministracion=tieneConsorcioAdministracion;
+	public ComplejoHabitacional(String nombre, float superficie, int cantidadMonoblocks, boolean consorcioAdministracion) {
+		this.nombre = nombre;
+		this.superficieEnHectarias = superficie;
+		this.cantidadMonoblock = cantidadMonoblocks;
+		this.tieneConsorcioAdministracion = consorcioAdministracion;
 	}
-
+	
 	public ComplejoHabitacional(String nombre) {
-		super(nombre);
+		this.nombre = nombre;
 	}
 
 	@Override
@@ -31,20 +29,16 @@ public class ComplejoHabitacional extends Barrio{
 		return aux;
 	}
 	public String getNombre() {
-		// TODO Auto-generated method stub
-		return null;
+		return nombre;
 	}
 	public float getSuperficie() {
-		// TODO Auto-generated method stub
-		return 0;
+		return superficieEnHectarias;
 	}
 	public int getCantidadMonoblock() {
-		// TODO Auto-generated method stub
-		return 0;
+		return cantidadMonoblock;
 	}
 	public boolean getTieneConsorcioAdministracion() {
-		// TODO Auto-generated method stub
-		return false;
+		return tieneConsorcioAdministracion;
 	}
 	
 }

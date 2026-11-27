@@ -4,20 +4,20 @@ public class UrbanizacionPlanificada extends Barrio {
 	private String numeroLey;
 	private boolean tieneConexionAgua;
 	
-	private final int DIVISOR_HECTAREAS = 10000;
-	
-	
 	public UrbanizacionPlanificada(String nombre, float superficie, String numeroLeyCaba, boolean conexionRedAgua) {
-		super(nombre,superficie);
-		this.numeroLey=numeroLey;
-		this.tieneConexionAgua=tieneConexionAgua;
+		this.nombre = nombre;
+		this.superficieEnHectarias = superficie;
+		this.numeroLey = numeroLeyCaba;
+		this.tieneConexionAgua = conexionRedAgua;
 	}
+	
 	public UrbanizacionPlanificada(String nombre) {
-		super(nombre);
+		this.nombre = nombre;
 	}
+
 	@Override
 	public float calculoDensidad() {
-		float cantidadHectareas = superficie / DIVISOR_HECTAREAS;
+		float cantidadHectareas = superficieEnHectarias;
 		float aux = personas.size() / cantidadHectareas;
 		return aux;
 	}
@@ -33,7 +33,7 @@ public class UrbanizacionPlanificada extends Barrio {
 		return nombre;
 	}
 	public float getSuperficie() {
-		return superficie;
+		return superficieEnHectarias;
 	}
 	public String getNumeroLey() {
 		return numeroLey;
@@ -41,6 +41,4 @@ public class UrbanizacionPlanificada extends Barrio {
 	public boolean getTieneConexionAgua() {
 		return tieneConexionAgua;
 	}
-	
-
 }

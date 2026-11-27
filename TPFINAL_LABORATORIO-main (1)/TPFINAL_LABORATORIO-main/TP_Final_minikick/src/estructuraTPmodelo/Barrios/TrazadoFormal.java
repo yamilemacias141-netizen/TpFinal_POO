@@ -4,17 +4,16 @@ public class TrazadoFormal extends Barrio{
 	private int cantidadEdificios;
 	private float porcentajeAsfalto;
 	
-	public TrazadoFormal(String nombre) {
-		super(nombre);
-		
+	public TrazadoFormal(String nombre, float superficie, int cantidadEdificios, float porcentajeAsfalto) {
+		this.nombre = nombre;
+		this.superficieEnHectarias = superficie;
+		this.cantidadEdificios = cantidadEdificios;
+		this.porcentajeAsfalto = porcentajeAsfalto;
 	}
 	
-	public TrazadoFormal(String nombre, float superficie, int cantidadEdificios2, float porcentajeAsfalto) {
-		super(nombre,superficie);
-		this.cantidadEdificios=cantidadEdificios;
-		this.porcentajeAsfalto=porcentajeAsfalto;
+	public TrazadoFormal(String nombre) {
+		this.nombre = nombre;
 	}
-
 
 	@Override
 	public float calculoDensidad() {
@@ -29,17 +28,15 @@ public class TrazadoFormal extends Barrio{
 		}
 		return aux;
 	}
-	public String getNombre() {
-		return nombre;
-	}
-	public float getSuperficie() {
 	
-		return superficie;
-	}
-	public int getCantudadEdificios() {
+	public int getCantidadEdificios() {
 		return cantidadEdificios;
 	}
 	public float getPorcentajeAsfalto() {
 		return porcentajeAsfalto;
 	}
+
+
+	
+	
 }

@@ -1,5 +1,6 @@
 package estructuraTPmodelo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import estructuraTPmodelo.Barrios.Barrio;
@@ -10,11 +11,13 @@ public class Comuna {
 	private int cantidadBarrios ;
 	private ArrayList<Barrio> barrios = new ArrayList<>();
 	
+	// para consultar todo y mostrarlo en la tabla
 	public Comuna(String nombre, int numeroComuna, int cantidadBarrios) {
 		this.nombre = nombre;
 		this.numeroComuna = numeroComuna;
 		this.cantidadBarrios = cantidadBarrios;
 	}
+	
 	public Comuna(String nombre, int numeroComuna) {
 		this.nombre = nombre;
 		this.numeroComuna = numeroComuna;
@@ -29,7 +32,7 @@ public class Comuna {
 		return aux;
 	}
 	
-	public int losCriticos() {
+	private int losCriticos() {
 		int contadorCriticos = 0;
 		for(Barrio b: barrios) {
 			if(b.criticidadHabitacional()) {
@@ -49,5 +52,13 @@ public class Comuna {
 	
 	public int getNumeroComuna() {
 		return numeroComuna;
+	}
+	
+	public void setBarrios(ArrayList<Barrio> barrios) {
+		this.barrios = barrios;
+	}
+	
+	public int tamañoLista() {
+		return barrios.size();
 	}
 }
